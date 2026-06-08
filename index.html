@@ -1,0 +1,1315 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CarTrust – Compra e Venda de Veículos Usados</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── RESET & BASE ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy:   #0d1e35;
+      --navy2:  #132640;
+      --orange: #e84c1f;
+      --orange2:#f05c30;
+      --white:  #ffffff;
+      --gray1:  #f4f6f9;
+      --gray2:  #e2e8f0;
+      --gray3:  #94a3b8;
+      --text:   #1e293b;
+      --radius: 12px;
+      --shadow: 0 4px 24px rgba(0,0,0,.10);
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; color: var(--text); background: var(--white); }
+    a { text-decoration: none; color: inherit; }
+    img { display: block; max-width: 100%; }
+    ul { list-style: none; }
+
+    /* ─── UTILITIES ────────────────────────────────────────────── */
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+    .btn-primary {
+      display: inline-block; background: var(--orange); color: var(--white);
+      padding: 14px 28px; border-radius: 8px; font-weight: 700; font-size: .95rem;
+      transition: background .2s, transform .15s;
+    }
+    .btn-primary:hover { background: var(--orange2); transform: translateY(-1px); }
+    .btn-outline {
+      display: inline-block; border: 2px solid var(--white); color: var(--white);
+      padding: 12px 26px; border-radius: 8px; font-weight: 600; font-size: .95rem;
+      transition: background .2s, color .2s;
+    }
+    .btn-outline:hover { background: var(--white); color: var(--navy); }
+    .section-label {
+      font-size: .78rem; font-weight: 700; letter-spacing: .12em;
+      text-transform: uppercase; color: var(--orange); margin-bottom: 8px;
+    }
+    .section-title { font-size: 2rem; font-weight: 800; color: var(--navy); line-height: 1.2; }
+    .section-sub { color: var(--gray3); margin-top: 10px; font-size: 1rem; line-height: 1.6; }
+
+    /* ─── NAVBAR ───────────────────────────────────────────────── */
+    #navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: var(--navy); transition: box-shadow .3s;
+    }
+    #navbar.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,.3); }
+    .nav-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      height: 80px;
+    }
+    .nav-logo { display: flex; align-items: center; gap: 8px; }
+    .nav-logo svg { height: 38px; }
+    .nav-links { display: flex; align-items: center; gap: 32px; }
+    .nav-links a { color: rgba(255,255,255,.85); font-size: .9rem; font-weight: 500; transition: color .2s; }
+    .nav-links a:hover { color: var(--orange); }
+    .nav-cta { display: flex; gap: 12px; }
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
+    .hamburger span { display: block; width: 24px; height: 2px; background: var(--white); border-radius: 2px; transition: .3s; }
+    .mobile-menu {
+      display: none; flex-direction: column; gap: 0;
+      background: var(--navy2); border-top: 1px solid rgba(255,255,255,.08);
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      padding: 14px 24px; color: rgba(255,255,255,.85); font-weight: 500;
+      border-bottom: 1px solid rgba(255,255,255,.06); transition: color .2s;
+    }
+    .mobile-menu a:hover { color: var(--orange); }
+
+    /* ─── HERO ─────────────────────────────────────────────────── */
+    #hero {
+      min-height: 100vh; background: linear-gradient(135deg, var(--navy) 0%, #1a3255 100%);
+      display: flex; flex-direction: column; justify-content: center; padding-top: 80px;
+      position: relative; overflow: hidden;
+    }
+    #hero::before {
+      content: ''; position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .hero-content { position: relative; z-index: 1; padding: 60px 0; }
+    .hero-content .container { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+    .hero-text .badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(232,76,31,.15); border: 1px solid rgba(232,76,31,.3);
+      color: #f87c5a; padding: 6px 14px; border-radius: 999px;
+      font-size: .82rem; font-weight: 600; margin-bottom: 24px;
+    }
+    .hero-text h1 { font-size: clamp(2rem, 4vw, 3rem); font-weight: 800; color: var(--white); line-height: 1.15; margin-bottom: 20px; }
+    .hero-text h1 span { color: var(--orange); }
+    .hero-text p { color: rgba(255,255,255,.7); font-size: 1.1rem; line-height: 1.7; margin-bottom: 32px; }
+    .hero-btns { display: flex; gap: 16px; flex-wrap: wrap; }
+    .hero-stats { display: flex; gap: 32px; margin-top: 48px; flex-wrap: wrap; }
+    .hero-stat strong { display: block; font-size: 1.8rem; font-weight: 800; color: var(--white); }
+    .hero-stat span { font-size: .85rem; color: rgba(255,255,255,.55); }
+    .hero-visual {
+      background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.10);
+      border-radius: var(--radius); padding: 24px; backdrop-filter: blur(10px);
+    }
+    .hero-car-card {
+      background: rgba(255,255,255,.08); border-radius: 10px; overflow: hidden; margin-bottom: 16px;
+    }
+    .hero-car-img {
+      width: 100%; height: 180px;
+      background: linear-gradient(135deg, #1e3a5f, #2d5285);
+      display: flex; align-items: center; justify-content: center; position: relative;
+    }
+    .hero-car-img svg { opacity: .4; }
+    .hero-car-tag {
+      position: absolute; top: 12px; left: 12px;
+      background: var(--orange); color: var(--white);
+      font-size: .72rem; font-weight: 700; padding: 4px 10px; border-radius: 999px;
+    }
+    .hero-car-info { padding: 16px; }
+    .hero-car-info h3 { color: var(--white); font-size: 1rem; font-weight: 700; }
+    .hero-car-info p { color: rgba(255,255,255,.5); font-size: .82rem; margin-top: 2px; }
+    .hero-car-price { color: var(--orange); font-size: 1.3rem; font-weight: 800; margin-top: 8px; }
+    .hero-mini-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .mini-card {
+      background: rgba(255,255,255,.08); border-radius: 8px; padding: 14px;
+      border: 1px solid rgba(255,255,255,.08);
+    }
+    .mini-card strong { color: var(--white); font-size: .95rem; display: block; }
+    .mini-card span { color: rgba(255,255,255,.5); font-size: .78rem; }
+    .mini-card .price { color: var(--orange); font-weight: 700; font-size: .9rem; display: block; margin-top: 6px; }
+
+    /* ─── SEARCH BAR ───────────────────────────────────────────── */
+    #search-bar { background: var(--white); padding: 0; margin-top: -1px; }
+    .search-box {
+      background: var(--white); border-radius: var(--radius); box-shadow: 0 8px 40px rgba(0,0,0,.12);
+      padding: 28px 32px; margin-top: -48px; position: relative; z-index: 10;
+    }
+    .search-box h3 { font-size: 1.1rem; font-weight: 700; color: var(--navy); margin-bottom: 20px; }
+    .search-grid { display: grid; grid-template-columns: repeat(4, 1fr) auto; gap: 12px; align-items: end; }
+    .search-field label { display: block; font-size: .78rem; font-weight: 600; color: var(--gray3); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .06em; }
+    .search-field select, .search-field input {
+      width: 100%; padding: 12px 14px; border: 1.5px solid var(--gray2); border-radius: 8px;
+      font-size: .9rem; color: var(--text); background: var(--white); appearance: none;
+      transition: border-color .2s;
+    }
+    .search-field select:focus, .search-field input:focus { outline: none; border-color: var(--orange); }
+    .search-btn {
+      background: var(--orange); color: var(--white); border: none; cursor: pointer;
+      padding: 12px 24px; border-radius: 8px; font-weight: 700; font-size: .9rem;
+      transition: background .2s; white-space: nowrap;
+    }
+    .search-btn:hover { background: var(--orange2); }
+
+    /* ─── ESTOQUE ──────────────────────────────────────────────── */
+    #estoque { padding: 80px 0; background: var(--gray1); }
+    .section-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 40px; flex-wrap: wrap; gap: 16px; }
+    .section-header a { color: var(--orange); font-weight: 600; font-size: .9rem; }
+    .filters { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 32px; }
+    .filter-btn {
+      padding: 8px 18px; border-radius: 999px; border: 1.5px solid var(--gray2);
+      font-size: .85rem; font-weight: 600; cursor: pointer; background: var(--white);
+      color: var(--text); transition: all .2s;
+    }
+    .filter-btn.active, .filter-btn:hover { background: var(--navy); color: var(--white); border-color: var(--navy); }
+    .cars-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
+    .car-card {
+      background: var(--white); border-radius: var(--radius); overflow: hidden;
+      box-shadow: var(--shadow); transition: transform .2s, box-shadow .2s;
+    }
+    .car-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,.15); }
+    .car-card-img {
+      position: relative; height: 200px;
+      background: linear-gradient(135deg, #1e3a5f 0%, #2d5285 100%);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .car-card-img svg { opacity: .25; }
+    .car-tag {
+      position: absolute; top: 12px; left: 12px;
+      padding: 4px 10px; border-radius: 999px; font-size: .72rem; font-weight: 700;
+    }
+    .tag-destaque { background: var(--orange); color: var(--white); }
+    .tag-novo { background: #10b981; color: var(--white); }
+    .tag-lojista { background: var(--navy); color: var(--white); }
+    .car-fav {
+      position: absolute; top: 12px; right: 12px;
+      background: rgba(255,255,255,.9); border: none; cursor: pointer;
+      width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; transition: transform .2s;
+    }
+    .car-fav:hover { transform: scale(1.15); }
+    .car-card-body { padding: 18px; }
+    .car-card-body h3 { font-size: 1rem; font-weight: 700; color: var(--navy); }
+    .car-meta { display: flex; gap: 12px; margin: 8px 0; flex-wrap: wrap; }
+    .car-meta span { font-size: .78rem; color: var(--gray3); display: flex; align-items: center; gap: 4px; }
+    .car-price { font-size: 1.4rem; font-weight: 800; color: var(--orange); margin: 10px 0; }
+    .car-price small { font-size: .78rem; color: var(--gray3); font-weight: 400; display: block; }
+    .car-card-footer {
+      display: flex; gap: 8px; padding: 0 18px 18px;
+    }
+    .btn-ver {
+      flex: 1; background: var(--navy); color: var(--white); border: none; cursor: pointer;
+      padding: 10px; border-radius: 8px; font-weight: 600; font-size: .85rem; transition: background .2s;
+    }
+    .btn-ver:hover { background: #1a3255; }
+    .btn-wpp {
+      background: #25d366; color: var(--white); border: none; cursor: pointer;
+      padding: 10px 14px; border-radius: 8px; font-size: .85rem; transition: background .2s;
+    }
+    .btn-wpp:hover { background: #1ebe5d; }
+
+    /* ─── REPASSE B2B ──────────────────────────────────────────── */
+    #repasse { padding: 80px 0; background: var(--white); }
+    .repasse-hero {
+      background: linear-gradient(135deg, #0d1e35 0%, #1a3255 60%, #e84c1f22 100%);
+      border-radius: 20px; padding: 56px 48px; display: grid;
+      grid-template-columns: 1fr 1fr; gap: 48px; align-items: center;
+      border: 1px solid rgba(232,76,31,.2); position: relative; overflow: hidden;
+    }
+    .repasse-hero::before {
+      content: 'B2B'; position: absolute; right: -20px; top: -20px;
+      font-size: 10rem; font-weight: 900; color: rgba(232,76,31,.06); line-height: 1;
+      pointer-events: none;
+    }
+    .repasse-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(232,76,31,.15); border: 1px solid rgba(232,76,31,.4);
+      color: #f87c5a; padding: 6px 14px; border-radius: 999px;
+      font-size: .8rem; font-weight: 700; margin-bottom: 18px;
+      text-transform: uppercase; letter-spacing: .08em;
+    }
+    .repasse-hero h2 { font-size: 2.2rem; font-weight: 800; color: var(--white); line-height: 1.2; margin-bottom: 16px; }
+    .repasse-hero h2 span { color: var(--orange); }
+    .repasse-hero p { color: rgba(255,255,255,.7); font-size: 1rem; line-height: 1.7; margin-bottom: 28px; }
+    .repasse-btns { display: flex; gap: 14px; flex-wrap: wrap; }
+    .repasse-cards { display: flex; flex-direction: column; gap: 14px; }
+    .repasse-card {
+      background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.1);
+      border-radius: 12px; padding: 20px 22px; display: flex; gap: 16px; align-items: center;
+      transition: background .2s;
+    }
+    .repasse-card:hover { background: rgba(255,255,255,.11); }
+    .repasse-card-icon {
+      width: 48px; height: 48px; border-radius: 12px; flex-shrink: 0;
+      background: rgba(232,76,31,.2); display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem;
+    }
+    .repasse-card h4 { color: var(--white); font-size: .95rem; font-weight: 700; margin-bottom: 4px; }
+    .repasse-card p { color: rgba(255,255,255,.55); font-size: .83rem; line-height: 1.5; }
+    .repasse-steps { margin-top: 56px; }
+    .repasse-steps h3 { font-size: 1.4rem; font-weight: 800; color: var(--navy); margin-bottom: 32px; text-align: center; }
+    .steps-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+    .step {
+      text-align: center; padding: 24px 16px;
+      background: var(--gray1); border-radius: 14px; border: 1px solid var(--gray2);
+      position: relative;
+    }
+    .step::after {
+      content: '→'; position: absolute; right: -16px; top: 50%;
+      transform: translateY(-50%); color: var(--orange); font-size: 1.2rem; font-weight: 700;
+    }
+    .step:last-child::after { display: none; }
+    .step-num {
+      width: 40px; height: 40px; border-radius: 50%; background: var(--orange); color: var(--white);
+      font-weight: 800; font-size: 1rem; display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 14px;
+    }
+    .step h5 { font-size: .9rem; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+    .step p { font-size: .8rem; color: var(--gray3); line-height: 1.5; }
+    @media (max-width: 1024px) { .repasse-hero { grid-template-columns: 1fr; } .steps-grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 600px) { .steps-grid { grid-template-columns: 1fr; } .repasse-hero { padding: 32px 24px; } .step::after { display: none; } }
+
+    /* ─── LOJISTAS ─────────────────────────────────────────────── */
+    #lojistas {
+      padding: 80px 0;
+      background: linear-gradient(135deg, var(--navy) 0%, #1a3255 100%);
+      position: relative; overflow: hidden;
+    }
+    #lojistas::after {
+      content: ''; position: absolute; right: -100px; top: -100px;
+      width: 500px; height: 500px; border-radius: 50%;
+      background: rgba(232,76,31,.08); pointer-events: none;
+    }
+    .lojistas-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; position: relative; z-index: 1; }
+    .lojistas-text .section-title { color: var(--white); }
+    .lojistas-text .section-sub { color: rgba(255,255,255,.65); }
+    .lojistas-benefits { margin-top: 32px; display: flex; flex-direction: column; gap: 16px; }
+    .benefit {
+      display: flex; gap: 16px; align-items: flex-start;
+      background: rgba(255,255,255,.06); border-radius: 10px; padding: 18px;
+      border: 1px solid rgba(255,255,255,.08);
+    }
+    .benefit-icon {
+      width: 44px; height: 44px; flex-shrink: 0; border-radius: 10px;
+      background: rgba(232,76,31,.2); display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem;
+    }
+    .benefit h4 { color: var(--white); font-size: .95rem; font-weight: 700; margin-bottom: 4px; }
+    .benefit p { color: rgba(255,255,255,.55); font-size: .85rem; line-height: 1.5; }
+    .lojistas-cta { margin-top: 32px; display: flex; gap: 16px; flex-wrap: wrap; }
+    .lojistas-form {
+      background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.12);
+      border-radius: var(--radius); padding: 36px; backdrop-filter: blur(10px);
+    }
+    .lojistas-form h3 { color: var(--white); font-size: 1.2rem; font-weight: 700; margin-bottom: 24px; }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; color: rgba(255,255,255,.7); font-size: .82rem; font-weight: 600; margin-bottom: 8px; }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%; padding: 12px 14px; border-radius: 8px;
+      border: 1.5px solid rgba(255,255,255,.15); background: rgba(255,255,255,.08);
+      color: var(--white); font-size: .9rem; font-family: inherit;
+      transition: border-color .2s;
+    }
+    .form-group input::placeholder, .form-group textarea::placeholder { color: rgba(255,255,255,.35); }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      outline: none; border-color: var(--orange);
+    }
+    .form-group select option { background: var(--navy); color: var(--white); }
+    .form-group textarea { resize: vertical; min-height: 90px; }
+
+    /* ─── SOBRE NÓS ────────────────────────────────────────────── */
+    #sobre { padding: 80px 0; background: var(--white); }
+    .sobre-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+    .sobre-visual {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+    }
+    .sobre-card {
+      background: var(--gray1); border-radius: var(--radius); padding: 28px 20px;
+      text-align: center; border: 1px solid var(--gray2);
+    }
+    .sobre-card .num { font-size: 2.2rem; font-weight: 800; color: var(--orange); }
+    .sobre-card p { font-size: .85rem; color: var(--gray3); margin-top: 4px; }
+    .sobre-card.featured { background: var(--navy); border-color: var(--navy); }
+    .sobre-card.featured .num { color: var(--white); }
+    .sobre-card.featured p { color: rgba(255,255,255,.6); }
+    .sobre-values { display: flex; flex-direction: column; gap: 14px; margin-top: 24px; }
+    .value-item { display: flex; gap: 12px; align-items: flex-start; }
+    .value-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--orange); margin-top: 6px; flex-shrink: 0; }
+    .value-item h5 { font-size: .9rem; font-weight: 700; color: var(--navy); margin-bottom: 2px; }
+    .value-item p { font-size: .84rem; color: var(--gray3); line-height: 1.5; }
+
+    /* ─── DEPOIMENTOS ──────────────────────────────────────────── */
+    #depoimentos { padding: 80px 0; background: var(--gray1); }
+    .dep-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; margin-top: 40px; }
+    .dep-card {
+      background: var(--white); border-radius: var(--radius); padding: 28px;
+      box-shadow: var(--shadow); position: relative;
+    }
+    .dep-card::before {
+      content: '"'; font-size: 5rem; color: var(--orange); opacity: .1;
+      position: absolute; top: 10px; left: 18px; line-height: 1; font-family: Georgia, serif;
+    }
+    .dep-stars { color: #f59e0b; font-size: .9rem; margin-bottom: 14px; }
+    .dep-text { color: var(--text); font-size: .92rem; line-height: 1.7; margin-bottom: 20px; }
+    .dep-author { display: flex; align-items: center; gap: 12px; }
+    .dep-avatar {
+      width: 44px; height: 44px; border-radius: 50%; background: var(--navy);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--white); font-weight: 700; font-size: .9rem; flex-shrink: 0;
+    }
+    .dep-author strong { display: block; font-size: .9rem; color: var(--navy); }
+    .dep-author span { font-size: .78rem; color: var(--gray3); }
+
+    /* ─── NOTÍCIAS ─────────────────────────────────────────────── */
+    #noticias { padding: 80px 0; background: var(--white); }
+    .news-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; margin-top: 40px; }
+    .news-card {
+      border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow);
+      transition: transform .2s; background: var(--white);
+    }
+    .news-card:hover { transform: translateY(-4px); }
+    .news-img {
+      height: 180px;
+      background: linear-gradient(135deg, #1e3a5f, #2d5285);
+      display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden;
+    }
+    .news-category {
+      position: absolute; bottom: 12px; left: 12px;
+      background: var(--orange); color: var(--white);
+      font-size: .72rem; font-weight: 700; padding: 4px 10px; border-radius: 999px;
+    }
+    .news-body { padding: 20px; }
+    .news-date { font-size: .78rem; color: var(--gray3); margin-bottom: 8px; }
+    .news-body h3 { font-size: 1rem; font-weight: 700; color: var(--navy); line-height: 1.4; margin-bottom: 10px; }
+    .news-body p { font-size: .85rem; color: var(--gray3); line-height: 1.6; }
+    .news-read { margin-top: 14px; color: var(--orange); font-size: .85rem; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; }
+
+    /* ─── REDES SOCIAIS ────────────────────────────────────────── */
+    #social {
+      padding: 60px 0;
+      background: var(--navy);
+    }
+    .social-inner { text-align: center; }
+    .social-inner .section-title { color: var(--white); margin-bottom: 8px; }
+    .social-inner .section-sub { color: rgba(255,255,255,.55); margin-bottom: 36px; }
+    .social-links { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
+    .social-link {
+      display: flex; align-items: center; gap: 10px;
+      padding: 14px 24px; border-radius: 10px; font-weight: 600; font-size: .9rem;
+      transition: transform .2s, opacity .2s;
+    }
+    .social-link:hover { transform: translateY(-3px); opacity: .9; }
+    .social-link svg { width: 22px; height: 22px; }
+    .sl-instagram { background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045); color: var(--white); }
+    .sl-facebook  { background: #1877f2; color: var(--white); }
+    .sl-youtube   { background: #ff0000; color: var(--white); }
+    .sl-whatsapp  { background: #25d366; color: var(--white); }
+
+    /* ─── CONTATO ──────────────────────────────────────────────── */
+    #contato { padding: 80px 0; background: var(--gray1); }
+    .contato-grid { display: grid; grid-template-columns: 1fr 1.5fr; gap: 60px; align-items: start; }
+    .contato-info { display: flex; flex-direction: column; gap: 24px; margin-top: 24px; }
+    .contato-item { display: flex; gap: 16px; align-items: flex-start; }
+    .contato-icon {
+      width: 48px; height: 48px; border-radius: 12px; background: var(--navy);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--white); font-size: 1.2rem; flex-shrink: 0;
+    }
+    .contato-item h4 { font-size: .9rem; font-weight: 700; color: var(--navy); margin-bottom: 2px; }
+    .contato-item p { font-size: .85rem; color: var(--gray3); }
+    .contato-form { background: var(--white); border-radius: var(--radius); padding: 36px; box-shadow: var(--shadow); }
+    .contato-form h3 { font-size: 1.2rem; font-weight: 700; color: var(--navy); margin-bottom: 24px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .cf-group { margin-bottom: 16px; }
+    .cf-group label { display: block; font-size: .82rem; font-weight: 600; color: var(--gray3); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .05em; }
+    .cf-group input, .cf-group select, .cf-group textarea {
+      width: 100%; padding: 12px 14px; border: 1.5px solid var(--gray2); border-radius: 8px;
+      font-size: .9rem; color: var(--text); font-family: inherit;
+      transition: border-color .2s;
+    }
+    .cf-group input:focus, .cf-group select:focus, .cf-group textarea:focus {
+      outline: none; border-color: var(--orange);
+    }
+    .cf-group textarea { resize: vertical; min-height: 100px; }
+    .wpp-btn {
+      display: flex; align-items: center; gap: 10px; justify-content: center;
+      background: #25d366; color: var(--white); border: none; cursor: pointer;
+      padding: 14px; border-radius: 8px; font-weight: 700; font-size: .95rem;
+      width: 100%; margin-top: 8px; transition: background .2s;
+    }
+    .wpp-btn:hover { background: #1ebe5d; }
+
+    /* ─── FOOTER ───────────────────────────────────────────────── */
+    footer {
+      background: #090f1a; color: rgba(255,255,255,.65);
+      padding: 56px 0 24px;
+    }
+    .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 48px; }
+    .footer-brand p { font-size: .88rem; line-height: 1.7; margin-top: 14px; }
+    .footer-col h4 { color: var(--white); font-size: .9rem; font-weight: 700; margin-bottom: 16px; }
+    .footer-col ul li { margin-bottom: 10px; }
+    .footer-col ul li a { font-size: .85rem; color: rgba(255,255,255,.5); transition: color .2s; }
+    .footer-col ul li a:hover { color: var(--orange); }
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,.08); padding-top: 24px;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 12px;
+    }
+    .footer-bottom p { font-size: .82rem; }
+    .footer-socials { display: flex; gap: 12px; }
+    .footer-socials a {
+      width: 36px; height: 36px; border-radius: 8px;
+      background: rgba(255,255,255,.07); display: flex; align-items: center; justify-content: center;
+      color: rgba(255,255,255,.6); font-size: .85rem; transition: background .2s, color .2s;
+    }
+    .footer-socials a:hover { background: var(--orange); color: var(--white); }
+
+    /* ─── WHATSAPP FLUTUANTE ───────────────────────────────────── */
+    .float-wpp {
+      position: fixed; bottom: 28px; right: 28px; z-index: 200;
+      background: #25d366; color: var(--white);
+      width: 58px; height: 58px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 20px rgba(37,211,102,.4);
+      transition: transform .2s;
+    }
+    .float-wpp:hover { transform: scale(1.1); }
+
+    /* ─── RESPONSIVE ───────────────────────────────────────────── */
+    @media (max-width: 1024px) {
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .hero-content .container { grid-template-columns: 1fr; }
+      .hero-visual { display: none; }
+      .lojistas-grid { grid-template-columns: 1fr; }
+      .sobre-grid { grid-template-columns: 1fr; }
+      .contato-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 768px) {
+      .nav-links, .nav-cta { display: none; }
+      .hamburger { display: flex; }
+      .search-grid { grid-template-columns: 1fr 1fr; }
+      .section-title { font-size: 1.6rem; }
+      .footer-grid { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+      .sobre-visual { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 480px) {
+      .search-grid { grid-template-columns: 1fr; }
+      .hero-stats { gap: 20px; }
+      .search-box { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ NAVBAR ══════════════════════════════════════════════════ -->
+<nav id="navbar">
+  <div class="container nav-inner">
+    <a href="#" class="nav-logo">
+      <svg viewBox="0 0 160 56" height="73" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Silhueta do carro (perfil sedã fluido) -->
+        <path d="M18 26 Q28 26 36 20 Q50 12 72 11 Q94 10 112 14 Q128 17 142 24 L142 26" stroke="#e84c1f" stroke-width="2.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- Capô dianteiro descendo -->
+        <path d="M142 24 L146 28" stroke="#e84c1f" stroke-width="2.8" stroke-linecap="round"/>
+        <!-- Para-choque traseiro -->
+        <path d="M18 26 L14 28" stroke="#e84c1f" stroke-width="2.8" stroke-linecap="round"/>
+        <!-- Texto Car -->
+        <text x="22" y="50" font-family="Inter,sans-serif" font-weight="700" font-size="20" fill="#4a89c8">Car</text>
+        <!-- Texto trust -->
+        <text x="56" y="50" font-family="Inter,sans-serif" font-weight="800" font-size="20" fill="#ffffff">trust</text>
+      </svg>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#estoque">Estoque</a></li>
+      <li><a href="#repasse" style="color:#f87c5a;font-weight:700;">Repasse B2B</a></li>
+      <li><a href="#lojistas">Para Lojistas</a></li>
+      <li><a href="#sobre">Sobre Nós</a></li>
+      <li><a href="#noticias">Notícias</a></li>
+      <li><a href="#contato">Contato</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="#repasse" class="btn-outline" style="border-color:rgba(232,76,31,.6);color:#f87c5a;font-size:.85rem;padding:9px 18px;">Repasse B2B</a>
+      <a href="https://wa.me/5511965008830" class="btn-primary" style="font-size:.85rem;padding:9px 18px;">WhatsApp</a>
+    </div>
+    <div class="hamburger" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#estoque" onclick="toggleMenu()">Estoque</a>
+    <a href="#repasse" onclick="toggleMenu()" style="color:#f87c5a;font-weight:700;">🔁 Repasse B2B</a>
+    <a href="#lojistas" onclick="toggleMenu()">Para Lojistas</a>
+    <a href="#sobre" onclick="toggleMenu()">Sobre Nós</a>
+    <a href="#noticias" onclick="toggleMenu()">Notícias</a>
+    <a href="#depoimentos" onclick="toggleMenu()">Depoimentos</a>
+    <a href="#contato" onclick="toggleMenu()">Contato</a>
+    <a href="https://wa.me/5511965008830" style="color:#25d366;font-weight:700;">📱 WhatsApp</a>
+  </div>
+</nav>
+
+<!-- ══ HERO ════════════════════════════════════════════════════ -->
+<section id="hero">
+  <div class="hero-content">
+    <div class="container">
+      <div class="hero-text">
+        <div class="badge">
+          <span>✦</span> Veículos selecionados com qualidade garantida
+        </div>
+        <h1>Compre seu carro<br/>com <span>total confiança</span></h1>
+        <p>A CarTrust oferece veículos inspecionados, com transparência total e os melhores preços do mercado. Atendimento direto pelo WhatsApp.</p>
+        <div class="hero-btns">
+          <a href="#estoque" class="btn-primary">Ver Estoque</a>
+          <a href="https://wa.me/5511965008830" class="btn-outline">Falar no WhatsApp</a>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat"><strong>2</strong><span>Veículos disponíveis</span></div>
+          <div class="hero-stat"><strong>4.9★</strong><span>Avaliação dos clientes</span></div>
+          <div class="hero-stat"><strong>100%</strong><span>Atendimento direto</span></div>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-car-card">
+          <div class="hero-car-img" style="padding:0;overflow:hidden;">
+            <img src="fotos/Tucson/20250902_173558(1).jpg" alt="Hyundai Tucson" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'">
+            <span class="hero-car-tag">DESTAQUE</span>
+          </div>
+          <div class="hero-car-info">
+            <h3>Hyundai Tucson 2010</h3>
+            <p>204.000 km • Automático • Flex</p>
+            <div class="hero-car-price">R$ 39.990</div>
+          </div>
+        </div>
+        <div class="hero-mini-cards">
+          <div class="mini-card">
+            <strong>Hyundai Creta</strong>
+            <span>2021 • 98.000 km</span>
+            <span class="price">R$ 89.000</span>
+          </div>
+          <div class="mini-card" style="display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;">
+            <strong style="font-size:.85rem;">Fale conosco</strong>
+            <a href="https://wa.me/5511965008830" style="background:#25d366;color:#fff;padding:6px 14px;border-radius:8px;font-size:.78rem;font-weight:700;">WhatsApp →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEARCH BOX -->
+  <div id="search-bar">
+    <div class="container">
+      <div class="search-box">
+        <h3>🔍 Encontre o carro ideal</h3>
+        <div class="search-grid">
+          <div class="search-field">
+            <label>Marca</label>
+            <select>
+              <option>Todas</option>
+              <option>Hyundai</option>
+            </select>
+          </div>
+          <div class="search-field">
+            <label>Modelo</label>
+            <select>
+              <option>Todos</option>
+              <option>Tucson</option>
+              <option>Creta</option>
+            </select>
+          </div>
+          <div class="search-field">
+            <label>Ano</label>
+            <select>
+              <option>Qualquer</option>
+              <option>2021</option>
+              <option>2010</option>
+            </select>
+          </div>
+          <div class="search-field">
+            <label>Preço máx.</label>
+            <select>
+              <option>Qualquer</option>
+              <option>R$ 50.000</option>
+              <option>R$ 100.000</option>
+            </select>
+          </div>
+          <button class="search-btn" onclick="document.getElementById('estoque').scrollIntoView({behavior:'smooth'})">Buscar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ ESTOQUE ══════════════════════════════════════════════════ -->
+<section id="estoque">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <p class="section-label">Nosso Estoque</p>
+        <h2 class="section-title">Veículos disponíveis</h2>
+      </div>
+      <a href="#">Ver todos os veículos →</a>
+    </div>
+
+    <div class="filters">
+      <button class="filter-btn active" onclick="filterCars(this,'todos')">Todos</button>
+      <button class="filter-btn" onclick="filterCars(this,'suvs')">SUVs</button>
+    </div>
+
+    <div class="cars-grid" id="carsGrid">
+      <!-- Cards gerados por JS -->
+    </div>
+  </div>
+</section>
+
+<!-- ══ REPASSE B2B ═══════════════════════════════════════════════ -->
+<section id="repasse">
+  <div class="container">
+    <div class="repasse-hero">
+      <div>
+        <div class="repasse-badge">🔁 Exclusivo para Lojistas</div>
+        <h2>Repasse entre <span>lojistas</span>:<br/>compre e venda direto no atacado</h2>
+        <p>A CarTrust é a plataforma ideal para o comércio de repasse B2B. Acesse um canal exclusivo onde lojistas negociam veículos entre si, com agilidade, preço justo e total segurança jurídica — sem intermediários desnecessários.</p>
+        <div class="repasse-btns">
+          <a href="https://wa.me/5511965008830?text=Olá!%20Tenho%20interesse%20no%20canal%20de%20Repasse%20B2B%20da%20CarTrust." class="btn-primary">Quero acessar o Repasse</a>
+          <a href="#lojistas" class="btn-outline" style="border-color:rgba(255,255,255,.4);">Cadastrar minha loja</a>
+        </div>
+      </div>
+      <div class="repasse-cards">
+        <div class="repasse-card">
+          <div class="repasse-card-icon">🏪</div>
+          <div>
+            <h4>Canal exclusivo lojista</h4>
+            <p>Somente lojistas verificados têm acesso ao estoque de repasse — mais segurança e negócios reais.</p>
+          </div>
+        </div>
+        <div class="repasse-card">
+          <div class="repasse-card-icon">⚡</div>
+          <div>
+            <h4>Giro rápido de estoque</h4>
+            <p>Anuncie veículos que precisam sair e encontre compradores lojistas prontos para fechar na hora.</p>
+          </div>
+        </div>
+        <div class="repasse-card">
+          <div class="repasse-card-icon">📄</div>
+          <div>
+            <h4>Documentação e NF garantidos</h4>
+            <p>Todas as transações B2B com nota fiscal, transferência correta e suporte jurídico da CarTrust.</p>
+          </div>
+        </div>
+        <div class="repasse-card">
+          <div class="repasse-card-icon">💲</div>
+          <div>
+            <h4>Precificação de mercado</h4>
+            <p>Acesso a tabelas de referência e histórico de vendas para garantir o melhor preço de repasse.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="repasse-steps">
+      <h3>Como funciona o Repasse CarTrust?</h3>
+      <div class="steps-grid">
+        <div class="step">
+          <div class="step-num">1</div>
+          <h5>Cadastre sua loja</h5>
+          <p>Crie sua conta de lojista parceiro com CNPJ e dados da empresa.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <h5>Acesse o canal B2B</h5>
+          <p>Visualize o estoque exclusivo de repasse de outros lojistas verificados.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <h5>Negocie diretamente</h5>
+          <p>Entre em contato, faça sua oferta e feche o negócio com segurança via plataforma.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <h5>CarTrust finaliza</h5>
+          <p>Documentação, NF e transferência intermediadas pela CarTrust. Simples e seguro.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ LOJISTAS ═════════════════════════════════════════════════ -->
+<section id="lojistas">
+  <div class="container">
+    <div class="lojistas-grid">
+      <div class="lojistas-text">
+        <p class="section-label">Para Lojistas</p>
+        <h2 class="section-title">Venda mais com a CarTrust</h2>
+        <p class="section-sub">Conecte seu estoque a milhares de compradores qualificados. Oferecemos uma plataforma completa para lojistas parceiros, com ferramentas de gestão, exposição e fechamento de negócios.</p>
+        <div class="lojistas-benefits">
+          <div class="benefit">
+            <div class="benefit-icon">📈</div>
+            <div>
+              <h4>Maior alcance de compradores</h4>
+              <p>Seus veículos expostos para toda a base de clientes da CarTrust, com destaque garantido no estoque.</p>
+            </div>
+          </div>
+          <div class="benefit">
+            <div class="benefit-icon">🔎</div>
+            <div>
+              <h4>Laudo e transparência</h4>
+              <p>Disponibilizamos laudos veiculares integrados, aumentando a confiança do comprador e acelerando a venda.</p>
+            </div>
+          </div>
+          <div class="benefit">
+            <div class="benefit-icon">💰</div>
+            <div>
+              <h4>Comissão competitiva</h4>
+              <p>Modelo de parceria flexível: cadastre-se gratuitamente e pague apenas quando vender.</p>
+            </div>
+          </div>
+          <div class="benefit">
+            <div class="benefit-icon">📊</div>
+            <div>
+              <h4>Painel de gestão</h4>
+              <p>Gerencie todo o seu estoque, métricas de visitas e leads qualificados em um único painel.</p>
+            </div>
+          </div>
+        </div>
+        <div class="lojistas-cta">
+          <a href="#" class="btn-primary">Seja um parceiro</a>
+          <a href="https://wa.me/5511965008830" class="btn-outline">Falar com consultor</a>
+        </div>
+      </div>
+      <div class="lojistas-form">
+        <h3>📋 Cadastro de lojista</h3>
+        <div class="form-group">
+          <label>Nome da loja / Razão social</label>
+          <input type="text" placeholder="Ex: Auto Center Silva" />
+        </div>
+        <div class="form-group">
+          <label>CNPJ</label>
+          <input type="text" placeholder="00.000.000/0001-00" />
+        </div>
+        <div class="form-group">
+          <label>Nome do responsável</label>
+          <input type="text" placeholder="Seu nome completo" />
+        </div>
+        <div class="form-group">
+          <label>WhatsApp</label>
+          <input type="tel" placeholder="(11) 96500-8830" />
+        </div>
+        <div class="form-group">
+          <label>Quantidade de veículos no estoque</label>
+          <select>
+            <option>1 a 10</option>
+            <option>11 a 30</option>
+            <option>31 a 60</option>
+            <option>Mais de 60</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Cidade / Estado</label>
+          <input type="text" placeholder="Ex: São Paulo, SP" />
+        </div>
+        <button class="btn-primary" style="width:100%;text-align:center;border:none;cursor:pointer;font-size:1rem;padding:14px;" onclick="alert('Cadastro enviado! Em breve nossa equipe entrará em contato.')">Enviar cadastro</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SOBRE NÓS ════════════════════════════════════════════════ -->
+<section id="sobre">
+  <div class="container">
+    <div class="sobre-grid">
+      <div>
+        <p class="section-label">Quem somos</p>
+        <h2 class="section-title">Transparência e confiança em cada negociação</h2>
+        <p class="section-sub" style="margin-top:16px;">A CarTrust nasceu da necessidade de tornar o mercado de veículos usados mais justo e confiável. Combinamos tecnologia, laudos independentes e uma equipe especializada para garantir que cada cliente — pessoa física ou lojista — faça o melhor negócio possível.</p>
+        <div class="sobre-values">
+          <div class="value-item">
+            <div class="value-dot"></div>
+            <div>
+              <h5>Laudos independentes</h5>
+              <p>Todos os veículos passam por inspeção técnica completa com relatório detalhado.</p>
+            </div>
+          </div>
+          <div class="value-item">
+            <div class="value-dot"></div>
+            <div>
+              <h5>Histórico completo</h5>
+              <p>Consulta de débitos, multas, recalls e histórico de proprietários antes da compra.</p>
+            </div>
+          </div>
+          <div class="value-item">
+            <div class="value-dot"></div>
+            <div>
+              <h5>Negociação segura</h5>
+              <p>Intermediamos toda a documentação e transferência para sua total segurança.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="sobre-visual">
+        <div class="sobre-card">
+          <div class="num">100%</div>
+          <p>Transparência na venda</p>
+        </div>
+        <div class="sobre-card featured">
+          <div class="num">4.9★</div>
+          <p>Avaliação dos clientes</p>
+        </div>
+        <div class="sobre-card featured">
+          <div class="num">Direto</div>
+          <p>Atendimento sem intermediários</p>
+        </div>
+        <div class="sobre-card">
+          <div class="num">Zero</div>
+          <p>Surpresas na negociação</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ DEPOIMENTOS ══════════════════════════════════════════════ -->
+<section id="depoimentos">
+  <div class="container">
+    <div style="text-align:center; max-width:600px; margin:0 auto;">
+      <p class="section-label">Depoimentos</p>
+      <h2 class="section-title">O que nossos clientes dizem</h2>
+      <p class="section-sub">Mais de 1.200 clientes satisfeitos com a experiência CarTrust.</p>
+    </div>
+    <div class="dep-grid">
+      <div class="dep-card">
+        <div class="dep-stars">★★★★★</div>
+        <p class="dep-text">Comprei meu Hyundai Creta pela CarTrust e foi a melhor experiência que já tive comprando carro usado. O processo foi transparente, rápido e a documentação impecável.</p>
+        <div class="dep-author">
+          <div class="dep-avatar">RM</div>
+          <div>
+            <strong>Rafael Mendes</strong>
+            <span>Comprador – São Paulo, SP</span>
+          </div>
+        </div>
+      </div>
+      <div class="dep-card">
+        <div class="dep-stars">★★★★★</div>
+        <p class="dep-text">Como lojista, aumentei minhas vendas em 40% no primeiro mês de parceria. A plataforma é muito fácil de usar e os compradores chegam já qualificados. Recomendo a todos os colegas do ramo.</p>
+        <div class="dep-author">
+          <div class="dep-avatar">AS</div>
+          <div>
+            <strong>Auto Center Silva</strong>
+            <span>Lojista parceiro – Campinas, SP</span>
+          </div>
+        </div>
+      </div>
+      <div class="dep-card">
+        <div class="dep-stars">★★★★★</div>
+        <p class="dep-text">Vendi meu carro rápido, sem dor de cabeça e com o preço justo. A equipe da CarTrust me ajudou em cada etapa, desde as fotos até a transferência. Processo seguro e transparente!</p>
+        <div class="dep-author">
+          <div class="dep-avatar">JC</div>
+          <div>
+            <strong>Juliana Costa</strong>
+            <span>Vendedora – Rio de Janeiro, RJ</span>
+          </div>
+        </div>
+      </div>
+      <div class="dep-card">
+        <div class="dep-stars">★★★★☆</div>
+        <p class="dep-text">Fui muito bem atendido. O histórico do veículo estava tudo certo, sem surpresas. Preço competitivo e financiamento fácil de conseguir. Já estou indicando para minha família.</p>
+        <div class="dep-author">
+          <div class="dep-avatar">MO</div>
+          <div>
+            <strong>Marcos Oliveira</strong>
+            <span>Comprador – Belo Horizonte, MG</span>
+          </div>
+        </div>
+      </div>
+      <div class="dep-card">
+        <div class="dep-stars">★★★★★</div>
+        <p class="dep-text">Já comprei dois carros pela CarTrust. O atendimento é sempre excelente, preços honestos e toda a documentação organizada. Plataforma confiável de verdade.</p>
+        <div class="dep-author">
+          <div class="dep-avatar">PS</div>
+          <div>
+            <strong>Patricia Souza</strong>
+            <span>Compradora recorrente – Curitiba, PR</span>
+          </div>
+        </div>
+      </div>
+      <div class="dep-card">
+        <div class="dep-stars">★★★★★</div>
+        <p class="dep-text">Minha loja está na plataforma há 8 meses e os resultados são consistentes. Gestão de estoque simples, leads qualificados e suporte eficiente. Vale cada centavo da parceria.</p>
+        <div class="dep-author">
+          <div class="dep-avatar">VR</div>
+          <div>
+            <strong>Veículos Rocha</strong>
+            <span>Lojista parceiro – Porto Alegre, RS</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ NOTÍCIAS ══════════════════════════════════════════════════ -->
+<section id="noticias">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <p class="section-label">Blog & Notícias</p>
+        <h2 class="section-title">Mundo automotivo</h2>
+      </div>
+      <a href="#">Ver todas as notícias →</a>
+    </div>
+    <div class="news-grid">
+      <div class="news-card">
+        <div class="news-img">
+          <svg width="80" height="60" viewBox="0 0 80 60" fill="none">
+            <path d="M10 45 Q25 15 40 18 Q55 20 70 32 L70 45Z" stroke="rgba(255,255,255,0.3)" stroke-width="2" fill="rgba(255,255,255,0.05)"/>
+            <ellipse cx="22" cy="46" rx="8" ry="6" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" fill="rgba(255,255,255,0.08)"/>
+            <ellipse cx="58" cy="46" rx="8" ry="6" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" fill="rgba(255,255,255,0.08)"/>
+          </svg>
+          <span class="news-category">Mercado</span>
+        </div>
+        <div class="news-body">
+          <p class="news-date">28 Mai 2026</p>
+          <h3>Vendas de usados crescem 18% no primeiro trimestre de 2026</h3>
+          <p>Mercado de veículos seminovos segue aquecido, impulsionado pela alta dos preços dos zero-quilômetro e maior acesso a financiamentos.</p>
+          <a href="#" class="news-read">Ler mais →</a>
+        </div>
+      </div>
+      <div class="news-card">
+        <div class="news-img" style="background:linear-gradient(135deg,#1a4a2e,#2d7a4e);">
+          <svg width="80" height="60" viewBox="0 0 80 60" fill="none">
+            <rect x="10" y="20" width="60" height="30" rx="4" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" fill="rgba(255,255,255,0.05)"/>
+            <path d="M25 20 L35 10 L55 10 L65 20" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" fill="rgba(255,255,255,0.03)"/>
+            <circle cx="40" cy="35" r="6" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+          </svg>
+          <span class="news-category">Elétricos</span>
+        </div>
+        <div class="news-body">
+          <p class="news-date">22 Mai 2026</p>
+          <h3>Elétricos usados: vale a pena comprar? Veja os prós e contras</h3>
+          <p>Com a crescente oferta de elétricos seminovos no Brasil, especialistas explicam o que checar antes de fechar negócio.</p>
+          <a href="#" class="news-read">Ler mais →</a>
+        </div>
+      </div>
+      <div class="news-card">
+        <div class="news-img" style="background:linear-gradient(135deg,#2d1a5e,#5a3d9e);">
+          <svg width="80" height="60" viewBox="0 0 80 60" fill="none">
+            <path d="M15 40 L30 20 L50 25 L65 15 L65 45 L15 45Z" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" fill="rgba(255,255,255,0.05)"/>
+            <circle cx="30" cy="30" r="3" fill="rgba(255,255,255,0.4)"/>
+            <circle cx="50" cy="27" r="3" fill="rgba(255,255,255,0.4)"/>
+            <circle cx="65" cy="17" r="3" fill="rgba(255,255,255,0.4)"/>
+          </svg>
+          <span class="news-category">Dicas</span>
+        </div>
+        <div class="news-body">
+          <p class="news-date">15 Mai 2026</p>
+          <h3>10 itens obrigatórios na vistoria antes de comprar um usado</h3>
+          <p>Guia prático para não cair em ciladas: confira a lista que todo comprador de seminovos precisa ter em mãos.</p>
+          <a href="#" class="news-read">Ler mais →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ REDES SOCIAIS ═════════════════════════════════════════════ -->
+<section id="social">
+  <div class="container social-inner">
+    <p class="section-label" style="color:rgba(232,76,31,.8);">Siga a CarTrust</p>
+    <h2 class="section-title">Acompanhe nossas redes sociais</h2>
+    <p class="section-sub">Novidades do estoque, dicas e conteúdo automotivo todo dia.</p>
+    <div class="social-links">
+      <a href="#" class="social-link sl-instagram">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+        Instagram
+      </a>
+      <a href="#" class="social-link sl-facebook">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        Facebook
+      </a>
+      <a href="#" class="social-link sl-youtube">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.495 6.205a3.007 3.007 0 0 0-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 0 0 .527 6.205a31.247 31.247 0 0 0-.522 5.805 31.247 31.247 0 0 0 .522 5.783 3.007 3.007 0 0 0 2.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 0 0 2.088-2.088 31.247 31.247 0 0 0 .5-5.783 31.247 31.247 0 0 0-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg>
+        YouTube
+      </a>
+      <a href="https://wa.me/5511965008830" class="social-link sl-whatsapp">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+        WhatsApp
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CONTATO ══════════════════════════════════════════════════ -->
+<section id="contato">
+  <div class="container">
+    <div class="contato-grid">
+      <div>
+        <p class="section-label">Fale Conosco</p>
+        <h2 class="section-title">Entre em contato</h2>
+        <p class="section-sub" style="margin-top:12px;">Nossa equipe está disponível para tirar suas dúvidas, ajudar na escolha do veículo ou apresentar nossas condições para lojistas.</p>
+        <div class="contato-info">
+          <div class="contato-item">
+            <div class="contato-icon">📱</div>
+            <div>
+              <h4>WhatsApp</h4>
+              <p>(11) 96500-8830</p>
+            </div>
+          </div>
+          <div class="contato-item">
+            <div class="contato-icon">📧</div>
+            <div>
+              <h4>E-mail</h4>
+              <p>cartrust.br@gmail.com</p>
+            </div>
+          </div>
+          <div class="contato-item">
+            <div class="contato-icon">🕐</div>
+            <div>
+              <h4>Horário de atendimento</h4>
+              <p>Seg–Sex: 8h às 18h<br/>Sábado: 9h às 14h</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="contato-form">
+        <h3>Envie uma mensagem</h3>
+        <div class="form-row">
+          <div class="cf-group">
+            <label>Nome</label>
+            <input type="text" placeholder="Seu nome" />
+          </div>
+          <div class="cf-group">
+            <label>Telefone</label>
+            <input type="tel" placeholder="(11) 96500-8830" />
+          </div>
+        </div>
+        <div class="cf-group">
+          <label>E-mail</label>
+          <input type="email" placeholder="seu@email.com" />
+        </div>
+        <div class="cf-group">
+          <label>Assunto</label>
+          <select>
+            <option>Interesse em veículo</option>
+            <option>Quero vender meu carro</option>
+            <option>Parceria lojista</option>
+            <option>Dúvidas gerais</option>
+            <option>Outro</option>
+          </select>
+        </div>
+        <div class="cf-group">
+          <label>Mensagem</label>
+          <textarea placeholder="Escreva sua mensagem..."></textarea>
+        </div>
+        <button class="btn-primary" style="width:100%;text-align:center;border:none;cursor:pointer;font-size:1rem;padding:14px;" onclick="alert('Mensagem enviada! Retornaremos em até 24h.')">Enviar mensagem</button>
+        <div style="text-align:center;margin:12px 0;color:#94a3b8;font-size:.85rem;">ou</div>
+        <a href="https://wa.me/5511965008830?text=Olá!%20Vim%20pelo%20site%20CarTrust%20e%20gostaria%20de%20mais%20informações." class="wpp-btn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+          Falar pelo WhatsApp agora
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FOOTER ═══════════════════════════════════════════════════ -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <svg viewBox="0 0 160 56" height="40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18 26 Q28 26 36 20 Q50 12 72 11 Q94 10 112 14 Q128 17 142 24 L142 26" stroke="#e84c1f" stroke-width="2.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M142 24 L146 28" stroke="#e84c1f" stroke-width="2.8" stroke-linecap="round"/>
+          <path d="M18 26 L14 28" stroke="#e84c1f" stroke-width="2.8" stroke-linecap="round"/>
+          <text x="22" y="50" font-family="Inter,sans-serif" font-weight="700" font-size="20" fill="#4a89c8">Car</text>
+          <text x="56" y="50" font-family="Inter,sans-serif" font-weight="800" font-size="20" fill="#ffffff">trust</text>
+        </svg>
+        <p>Compra e venda de veículos usados com transparência, tecnologia e confiança. Para pessoas físicas e lojistas parceiros.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Navegação</h4>
+        <ul>
+          <li><a href="#estoque">Estoque</a></li>
+          <li><a href="#repasse">Repasse B2B</a></li>
+          <li><a href="#lojistas">Para Lojistas</a></li>
+          <li><a href="#sobre">Sobre Nós</a></li>
+          <li><a href="#depoimentos">Depoimentos</a></li>
+          <li><a href="#noticias">Notícias</a></li>
+          <li><a href="#contato">Contato</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Serviços</h4>
+        <ul>
+          <li><a href="#">Comprar veículo</a></li>
+          <li><a href="#">Vender veículo</a></li>
+          <li><a href="#">Laudo veicular</a></li>
+          <li><a href="#">Financiamento</a></li>
+          <li><a href="#repasse">Repasse B2B</a></li>
+          <li><a href="#lojistas">Parceria lojista</a></li>
+          <li><a href="#">Transferência</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="#">Política de privacidade</a></li>
+          <li><a href="#">Termos de uso</a></li>
+          <li><a href="#">Cookies</a></li>
+        </ul>
+        <div style="margin-top:20px;">
+          <h4>Contato</h4>
+          <ul>
+            <li><a href="tel:+5511965008830">(11) 96500-8830</a></li>
+            <li><a href="mailto:cartrust.br@gmail.com">cartrust.br@gmail.com</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 CarTrust. Todos os direitos reservados.</p>
+      <div class="footer-socials">
+        <a href="#" title="Instagram">IG</a>
+        <a href="#" title="Facebook">FB</a>
+        <a href="#" title="YouTube">YT</a>
+        <a href="https://wa.me/5511965008830" title="WhatsApp">WA</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ══ BOTÃO FLUTUANTE WHATSAPP ══════════════════════════════════ -->
+<a href="https://wa.me/5511965008830?text=Olá!%20Vim%20pelo%20site%20CarTrust." class="float-wpp" title="Falar no WhatsApp">
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+</a>
+
+<!-- ══ JAVASCRIPT ════════════════════════════════════════════════ -->
+<script>
+  /* NAVBAR scroll */
+  window.addEventListener('scroll', () => {
+    document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 20);
+  });
+
+  /* Mobile menu */
+  function toggleMenu() {
+    document.getElementById('mobileMenu').classList.toggle('open');
+  }
+
+  /* CARS DATA */
+  const cars = [
+    {
+      id:1, name:'Hyundai Tucson', year:2010, km:'204.000', fuel:'Flex', transmission:'Automático',
+      price:'39.990', tag:'destaque', category:'suvs', repasse:false,
+      images:[
+        'fotos/Tucson/20250902_173558(1).jpg',
+        'fotos/Tucson/20250902_173558(3)(1).jpg',
+        'fotos/Tucson/20250902_173558(3).jpg',
+        'fotos/Tucson/20250902_173558(4).jpg',
+        'fotos/Tucson/20260506_065050.jpg',
+        'fotos/Tucson/IMG_20260602_091637_463.webp'
+      ]
+    },
+    {
+      id:2, name:'Hyundai Creta', year:2021, km:'98.000', fuel:'Flex', transmission:'Automático',
+      price:'89.000', tag:'', category:'suvs', repasse:false,
+      images:[
+        'fotos/Creta/7631456_15_B_310d4841a8.jpeg',
+        'fotos/Creta/7631456_2_B_17033a95b4.jpeg',
+        'fotos/Creta/7631456_5_B_826c9f01dd.jpeg',
+        'fotos/Creta/7631456_5_B_f509812abc%20(1).jpeg',
+        'fotos/Creta/IMG-20260531-WA0023.jpg',
+        'fotos/Creta/IMG-20260531-WA0025.jpg'
+      ]
+    },
+  ];
+
+  const tagLabels = { destaque:'DESTAQUE', novo:'NOVO', lojista:'LOJISTA', '':'' };
+  const tagClasses = { destaque:'tag-destaque', novo:'tag-novo', lojista:'tag-lojista', '':'' };
+
+  function carSVG() {
+    return `<svg width="140" height="70" viewBox="0 0 140 70" fill="none">
+      <path d="M15 52 Q35 20 65 22 Q95 24 125 38 L125 52 Q95 57 65 57 Q35 57 15 52Z" stroke="rgba(255,255,255,0.2)" stroke-width="2" fill="rgba(255,255,255,0.04)"/>
+      <ellipse cx="38" cy="54" rx="12" ry="9" stroke="rgba(255,255,255,0.25)" stroke-width="2" fill="rgba(255,255,255,0.08)"/>
+      <ellipse cx="102" cy="54" rx="12" ry="9" stroke="rgba(255,255,255,0.25)" stroke-width="2" fill="rgba(255,255,255,0.08)"/>
+    </svg>`;
+  }
+
+  function slideImg(carId, dir) {
+    const wrap = document.getElementById('img-wrap-' + carId);
+    const img = wrap.querySelector('img[data-imgs]');
+    const imgs = JSON.parse(img.dataset.imgs);
+    let idx = (parseInt(img.dataset.idx) + dir + imgs.length) % imgs.length;
+    img.src = imgs[idx];
+    img.dataset.idx = idx;
+    const counter = document.getElementById('img-counter-' + carId);
+    if (counter) counter.textContent = (idx + 1) + '/' + imgs.length;
+  }
+
+  function renderCars(filter = 'todos') {
+    const grid = document.getElementById('carsGrid');
+    const filtered = filter === 'todos' ? cars :
+      filter === 'lojista' ? cars.filter(c => c.repasse) :
+      cars.filter(c => c.category === filter);
+    grid.innerHTML = filtered.map(car => {
+      const hasImgs = car.images && car.images.length > 0;
+      const multiImg = hasImgs && car.images.length > 1;
+      return `
+      <div class="car-card">
+        <div class="car-card-img" style="position:relative;overflow:hidden;" id="img-wrap-${car.id}">
+          ${hasImgs
+            ? `<img src="${car.images[0]}" alt="${car.name}" data-imgs='${JSON.stringify(car.images)}' data-idx="0" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;">`
+            : carSVG()
+          }
+          ${multiImg ? `
+            <button onclick="slideImg(${car.id},-1)" style="position:absolute;left:8px;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.5);border:none;color:#fff;cursor:pointer;border-radius:50%;width:30px;height:30px;font-size:1.1rem;line-height:1;z-index:2;">‹</button>
+            <button onclick="slideImg(${car.id},1)"  style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.5);border:none;color:#fff;cursor:pointer;border-radius:50%;width:30px;height:30px;font-size:1.1rem;line-height:1;z-index:2;">›</button>
+            <span id="img-counter-${car.id}" style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.5);color:#fff;font-size:.7rem;padding:2px 8px;border-radius:999px;z-index:2;">1/${car.images.length}</span>
+          ` : ''}
+          ${car.tag ? `<span class="car-tag ${tagClasses[car.tag]}" style="position:absolute;top:12px;left:12px;z-index:2;">${tagLabels[car.tag]}</span>` : ''}
+          ${car.repasse ? `<span class="car-tag tag-destaque" style="position:absolute;top:12px;left:12px;z-index:2;">REPASSE</span>` : ''}
+          <button class="car-fav" onclick="toggleFav(this)" title="Favoritar" style="position:absolute;top:12px;right:12px;z-index:2;">♡</button>
+        </div>
+        <div class="car-card-body">
+          <h3>${car.name}</h3>
+          <div class="car-meta">
+            <span>📅 ${car.year}</span>
+            <span>🛣️ ${car.km} km</span>
+            <span>⛽ ${car.fuel}</span>
+            <span>⚙️ ${car.transmission}</span>
+          </div>
+          <div class="car-price">
+            R$ ${car.price}
+            <small>${car.repasse ? 'Modalidade repasse' : 'Consulte condições de financiamento'}</small>
+          </div>
+        </div>
+        <div class="car-card-footer">
+          <button class="btn-ver" onclick="alert('Entre em contato para mais detalhes sobre o ${car.name}.')">Ver detalhes</button>
+          <button class="btn-wpp" onclick="window.open('https://wa.me/5511965008830?text=Olá!%20Tenho%20interesse%20no%20${encodeURIComponent(car.name + ' ' + car.year)}','_blank')" title="WhatsApp">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+          </button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  function filterCars(btn, category) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderCars(category);
+  }
+
+  function toggleFav(btn) {
+    btn.textContent = btn.textContent === '♡' ? '♥' : '♡';
+    btn.style.color = btn.textContent === '♥' ? '#e84c1f' : '';
+  }
+
+  /* Init */
+  renderCars();
+</script>
+</body>
+</html>
